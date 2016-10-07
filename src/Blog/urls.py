@@ -20,7 +20,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 import comments.urls
 import posts.urls
-
+import posts.api.urls
+import comments.api.urls
 from accounts.views import (login_view, register_view, logout_view)
 
 urlpatterns = [
@@ -30,6 +31,9 @@ urlpatterns = [
     url(r'^logout/', logout_view, name = "logout"),
     url(r'^register/', register_view, name = "register"),
     url(r'^', include(posts.urls, namespace = "posts")),
+    # url(r'^api/comments/', include(comments.api.urls, namespace = "comments-api")),
+    url(r'^api/comments/', include(comments.api.urls, namespace="comments-api")),
+    url(r'^api/posts/', include(posts.api.urls, namespace = "posts-api")),
 ]
 
 if settings.DEBUG:
