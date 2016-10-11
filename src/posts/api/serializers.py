@@ -1,5 +1,7 @@
 from rest_framework.serializers import ModelSerializer, HyperlinkedIdentityField, SerializerMethodField
-
+from comments.api.serializers import CommentSerializer
+from accounts.api.serializers import UserDetailSerializer
+from comments.models import Comment
 from posts.models import Post
 
 class PostCreateUpdateSerializer(ModelSerializer):
@@ -11,11 +13,13 @@ post_detail_url = HyperlinkedIdentityField(view_name = 'posts-api:detail', looku
 
 class PostDetailSerializer(ModelSerializer):
     url = post_detail_url
+    user = UserDetailSerializer(read_only = True)
     image = SerializerMethodField()
     html = SerializerMethodField()
+    comments = SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['url', 'id', 'user', 'title', 'content', 'html', 'publish', 'image']
+        fields = ['url', 'id', 'user', 'title', 'content', 'html', 'publish', 'image', 'comments']
 
     def get_html(self, obj):
         return obj.get_markdown()
@@ -27,13 +31,15 @@ class PostDetailSerializer(ModelSerializer):
             image = None
         return image
 
+    def get_comments(self, obj):
+        c_qs = Comment.objects.filter_by_instance(obj)
+        comments = CommentSerializer(c_qs, many = True).data
+        return comments
+
 
 class PostListSerializer(ModelSerializer):
     url = post_detail_url
-    user = SerializerMethodField()
+    user = UserDetailSerializer(read_only = True)
     class Meta:
         model = Post
         fields = ["url", "id", "user", "title", "content", 'publish']
-
-    def get_user(self, obj):
-        return str(obj.user.username)

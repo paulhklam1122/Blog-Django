@@ -1,7 +1,9 @@
 from urllib import quote_plus
+
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
@@ -11,7 +13,6 @@ from comments.forms import CommentForm
 from comments.models import Comment
 from .forms import PostForm
 from .models import Post
-from .utils import get_read_time
 # Create your views here.
 def post_create(request):
     if not request.user.is_staff or not request.user.is_superuser:
@@ -30,7 +31,7 @@ def post_create(request):
     context = {"form": form}
     return render(request, "post_form.html", context)
 
-def post_detail(request, slug):
+def post_detail(request, slug = None):
     instance = get_object_or_404(Post, slug = slug)
     if instance.publish > timezone.now().date() or instance.draft:
         if not request.user.is_staff or not request.user.is_superuser:
