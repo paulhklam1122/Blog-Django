@@ -144,10 +144,26 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         # 'rest_framework.authentication.BasicAuthentication'
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticatedOrReadOnly'
     )
 }
+
+'''
+curl -X POST -d "username=paul_lam&password=awesomeguy" http://localhost:8000/api/auth/token/
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdWxfbGFtIiwidXNlcl9pZCI6MSwiZW1haWwiOiIiLCJleHAiOjE0NzYyMDk3MDd9.InKAH00Nr-9um9KzhlMuo7uS0qtHjQz_IOANM3-SQbI
+
+curl -H "Authorization: JWT <eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdWxfbGFtIiwidXNlcl9pZCI6MSwiZW1haWwiOiIiLCJleHAiOjE0NzYyMDk3MDd9.InKAH00Nr-9um9KzhlMuo7uS0qtHjQz_IOANM3-SQbI>" http://localhost:8000/api/comments/
+
+curl -H "Authorization: JWT <eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdWxfbGFtIiwidXNlcl9pZCI6MSwiZW1haWwiOiIiLCJleHAiOjE0NzYyMDk3MDd9.InKAH00Nr-9um9KzhlMuo7uS0qtHjQz_IOANM3-SQbI>" POST -d "content=this is some content" http://localhost:8000/api/comments/create?type=post&slug=test-post
+
+curl http://localhost:8000/api/comments/
+
+curl -X POST -H "Authorization: JWT <eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdWxfbGFtIiwidXNlcl9pZCI6MSwiZW1haWwiOiIiLCJleHAiOjE0NzYyMDk3MDd9.InKAH00Nr-9um9KzhlMuo7uS0qtHjQz_IOANM3-SQbI>" -H "Content-Type: application/json" -d '{"content":"another try"}' 'http://localhost:8000/api/comments/create?slug=test-post&type=post'
+'''
